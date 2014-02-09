@@ -1,11 +1,11 @@
 var Bloodhound = {
-	TemplateProviders: {
-		ITemplateProvider: {
+	ViewProviders: {
+		IViewProvider: {
 			createTemplate: function createTemplate(name, source) {
-				throw new Error("Bloodhound.ITemplateProvider is an interface");
+				throw new Error("Bloodhound.IViewProvider is an interface");
 			},
 			forEachSubTemplate: function forEachSubTemplate(source, callback, context) {
-				throw new Error("Bloodhound.ITemplateProvider is an interface");
+				throw new Error("Bloodhound.IViewProvider is an interface");
 			}
 		}
 	},

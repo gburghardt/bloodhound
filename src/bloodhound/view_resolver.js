@@ -1,4 +1,6 @@
-Bloodhound.TemplateResolver = function TemplateResolver(container, provider) {
+(function() {
+
+function ViewResolver(container, provider) {
 
 	// Public Properties
 
@@ -34,12 +36,12 @@ Bloodhound.TemplateResolver = function TemplateResolver(container, provider) {
 		    xhr = new XMLHttpRequest();
 
 		var readyStateChanged = function readyStateChanged() {
-			if (this.readyState !== 4) {
+			if (xhr.readyState !== 4) {
 				return;
 			}
-			else if (this.readyState === 200) {
-				fetchSubTemplates(this.responseText, function() {
-					_templates[name] = new Template(name, this.responseText);
+			else if (xhr.status === 200) {
+				fetchSubTemplates(xhr.responseText, function() {
+					_templates[name] = new Template(name, xhr.responseText);
 					callback.call(context || null, _templates[name]);
 					complete();
 				});
@@ -56,8 +58,8 @@ Bloodhound.TemplateResolver = function TemplateResolver(container, provider) {
 		};
 
 		xhr.onreadystatechange = readyStateChanged;
-		xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 		xhr.open("GET", url);
+		xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 		xhr.send(null);
 	}
 
@@ -86,9 +88,19 @@ Bloodhound.TemplateResolver = function TemplateResolver(container, provider) {
 	}
 
 	function find(name, callback, context) {
+		context = context || null;
+
 		if (_templates[name]) {
-			callback.call(context || null, _templates[name]);
-			return;
+			if (callback) {
+				callback.call(context, _templates[name]);
+				return;
+			}
+			else {
+				return _templates[name];
+			}
+		}
+		else if (!callback) {
+			throw new Error("Cannot find uncached template: " + name);
 		}
 
 		var node = getSourceNode(name);
@@ -104,27 +116,6 @@ Bloodhound.TemplateResolver = function TemplateResolver(container, provider) {
 				callback.call(context, template);
 			});
 		}
-
-
-		var node, source;
-
-		if (!_templates[name]) {
-			source = _sourceCache[self.sourceCacheKeyPrefix + name] || null;
-
-			if (source) {
-				_templates[name] = self.provider.createTemplate(name, source);
-			}
-			else {
-				node = getSourceNode(name);
-
-				if (node && !node.getAttribute(self.templateUrlAttribute)) {
-					_templates[name] = self.provider.createTemplate(name, node.innerHTML);
-					node = null;
-				}
-			}
-		}
-
-		return _templates[name] || null;
 	}
 
 	function getSourceNode(name, container) {
@@ -166,7 +157,13 @@ Bloodhound.TemplateResolver = function TemplateResolver(container, provider) {
 			    + self.templateExtension;
 		}
 
-		return url;
+		return url + (/^\?/.test(url) ? "&" : "?") + "__cache__=" + ViewResolver.cacheBuster;
 	}
 
 };
+
+ViewResolver.cacheBuster = new Date().getTime();
+
+Bloodhound.ViewResolver = ViewResolver;
+
+})();

@@ -1,15 +1,15 @@
 (function() {
 
-function RenderingEngine(resolver) {
-	this.resolver = resolver || null;
+function RenderingEngine(viewResolver) {
+	this.viewResolver = viewResolver || null;
 }
 
-RenderingEngine.prototype.resolver = null;
+RenderingEngine.prototype.viewResolver = null;
 
 RenderingEngine.prototype.render = function render(name, data) {
 	var promise = new Bloodhound.RenderPromise(this);
 
-	this.resolver.fetch(name, function(template) {
+	this.viewResolver.find(name, function(template) {
 		promise
 			.fulfill("done", template.render(data))
 			.destructor();

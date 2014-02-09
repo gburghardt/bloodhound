@@ -6,14 +6,14 @@
 </head>
 <body>
 
-	<section id="blog">Loading...</section>
+<section id="blog">Loading...</section>
 
 <script type="text/javascript" src="../bower_components/concrete-promise/src/promise.js"></script>
 <script type="text/javascript" src="../bower_components/simple-template/src/template.js"></script>
 <script type="text/javascript" src="../src/bloodhound.js"></script>
 <script type="text/javascript" src="../src/bloodhound/rendering_engine.js"></script>
-<script type="text/javascript" src="../src/bloodhound/template_resolver.js"></script>
-<script type="text/javascript" src="../src/bloodhound/template_providers/simple_template_provider.js"></script>
+<script type="text/javascript" src="../src/bloodhound/view_resolver.js"></script>
+<script type="text/javascript" src="../src/bloodhound/view_providers/simple_template_view_provider.js"></script>
 
 <script type="text/html" data-template-name="blog/posts/index">
 	<h1>#{title}</h1>
@@ -49,11 +49,13 @@
 		}]
 	};
 
-	var resolver = new Bloodhound.TemplateResolver(document);
-	resolver.provider = new Bloodhound.TemplateProviders.SimpleTemplateProvider();
-	resolver.templateUrlBase = "./simple_templates";
+	var viewResolver = new Bloodhound.ViewResolver(document);
+	viewResolver.provider = new Bloodhound.ViewProviders.SimpleTemplateViewProvider();
+	viewResolver.templateUrlBase = "./simple_templates";
 
-	var renderingEngine = new Bloodhound.RenderingEngine(resolver);
+	var renderingEngine = new Bloodhound.RenderingEngine(viewResolver);
+
+	Template.viewResolver = viewResolver;
 
 	renderingEngine.render("blog/posts/index", blog)
 		.done(function(source) {

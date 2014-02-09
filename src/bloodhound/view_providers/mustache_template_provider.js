@@ -1,14 +1,14 @@
 (function() {
 
-function MustacheTemplateProvider() {
+function MustacheViewProvider() {
 	this.regex = /\{\{>\s*([-\w\/.]+)/g;
 }
 
-MustacheTemplateProvider.prototype.createTemplate = function createTemplate(name, source) {
+MustacheViewProvider.prototype.createTemplate = function createTemplate(name, source) {
 	return new MustacheTemplate(name, source);
 };
 
-MustacheTemplateProvider.prototype.forEachSubTemplate = function forEachSubTemplate(source, callback, context) {
+MustacheViewProvider.prototype.forEachSubTemplate = function forEachSubTemplate(source, callback, context) {
 	source.replace(this.regex, function(tag, templateName) {
 		callback.call(context, templateName);
 	});
@@ -24,6 +24,6 @@ MustacheTemplate.prototype.render = function render(data) {
 	return Mustache.render(this.source, data);
 };
 
-Bloodhound.TemplateProviders.MustacheTemplateProvider = MustacheTemplateProvider;
+Bloodhound.ViewProviders.MustacheViewProvider = MustacheViewProvider;
 
 })();

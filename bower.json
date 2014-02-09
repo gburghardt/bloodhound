@@ -15,6 +15,6 @@
 	},
 	"devDependencies": {
 		"mustache": "~0.8.1",
-		"simple-template": "~1.1.4"
+		"simple-template": "file:///c/Users/BurghardtG/code/git/template/.git#synchronous_rendering"
 	}
 }
