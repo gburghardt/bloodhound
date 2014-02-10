@@ -16,6 +16,7 @@ function ViewResolver(container, provider) {
 
 	this.fetch = fetch;
 	this.find = find;
+	this.getTemplateCache = getTemplateCache;
 
 	// Private Properties
 
@@ -41,7 +42,7 @@ function ViewResolver(container, provider) {
 			}
 			else if (xhr.status === 200) {
 				fetchSubTemplates(xhr.responseText, function() {
-					_templates[name] = new Template(name, xhr.responseText);
+					_templates[name] = self.provider.createTemplate(name, xhr.responseText);
 					callback.call(context || null, _templates[name]);
 					complete();
 				});
@@ -138,6 +139,10 @@ function ViewResolver(container, provider) {
 		scripts = container = null;
 
 		return _sourceNodeCache[name] || null;
+	}
+
+	function getTemplateCache() {
+		return _templates;
 	}
 
 	function getTemplateURL(name) {

@@ -6,5 +6,77 @@
 </head>
 <body>
 
+<section id="blog">Loading...</section>
+
+<script type="text/javascript" src="../bower_components/concrete-promise/src/promise.js"></script>
+<script type="text/javascript" src="../bower_components/mustache/mustache.js"></script>
+<script type="text/javascript" src="../src/bloodhound.js"></script>
+<script type="text/javascript" src="../src/bloodhound/rendering_engine.js"></script>
+<script type="text/javascript" src="../src/bloodhound/view_resolver.js"></script>
+<script type="text/javascript" src="../src/bloodhound/view_providers/mustache_view_provider.js"></script>
+<script type="text/javascript" src="../src/bloodhound/adapters/mustache_template.js"></script>
+
+<script type="text/html" data-template-name="blog/posts/index">
+	<h1>{{title}}</h1>
+
+	{{#posts}}
+		<article>
+			<h2>{{title}}</h2>
+			<p>{{date}}</p>
+
+			<div>
+				{{{body}}}
+			</div>
+
+			<ol>
+				{{> blog/posts/comments}}
+			</ol>
+		</article>
+	{{/posts}}
+</script>
+
+<script type="text/html" data-template-name="blog/posts/detail" data-template-url="./mustache_templates/post_detail.tpl"></script>
+
+<script type="text/javascript">
+	var blog = {
+		title: "Mustache Templates",
+		posts: [{
+			title: "Mustache Templates Are Easy",
+			body: [
+				'<p>The Blog template is embedded in this page using a &lt;script&gt; tag.</p>',
+				'<p>The template for each blog post is aliased to a different URL using a &lt;script&gt; tag.</p>',
+				'<p>Lastly, the comments for each blog post are referenced by name, which is turned into a URL and then downloaded.</p>'
+			].join(""),
+			comments: [{
+				name: "Jane Doe",
+				comment: "Lorem ipsum",
+				date: "2014/02/16"
+			},{
+				name: "Anonymous Coward",
+				comment: "General trash talk",
+				date: "2014/02/15"
+			},{
+				name: "John Doe",
+				comment: "Witty retort.",
+				date: "2014/02/15"
+			}]
+		}]
+	};
+
+	var viewResolver = new Bloodhound.ViewResolver(document);
+	viewResolver.provider = new Bloodhound.ViewProviders.MustacheViewProvider();
+	viewResolver.templateUrlBase = "./mustache_templates";
+
+	Bloodhound.Adapters.MustacheTemplate.viewResolver = viewResolver;
+
+	var renderingEngine = new Bloodhound.RenderingEngine(viewResolver);
+
+	renderingEngine.render("blog/posts/index", blog)
+		.done(function(source) {
+			document.getElementById("blog").innerHTML = source;
+		});
+
+</script>
+
 </body>
 </html>

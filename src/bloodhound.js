@@ -1,4 +1,5 @@
 var Bloodhound = {
+	Adapters: {},
 	ViewProviders: {
 		IViewProvider: {
 			createTemplate: function createTemplate(name, source) {
