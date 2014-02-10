@@ -29,10 +29,6 @@ var Bloodhound = {
 
 	RenderPromise: Promise.create(["done"]),
 
-	findView: function findView(name) {
-		return this.getViewResolver().find(name);
-	},
-
 	getRenderingEngine: function getRenderingEngine() {
 		return _renderingEngine || (_renderingEngine = new Bloodhound.RenderingEngine(this.getViewResolver()));
 	},
