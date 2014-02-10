@@ -1,15 +1,20 @@
 (function() {
 
-function MustacheViewProvider() {
-	this.regex = /\{\{>\s*([-\w\/.]+)/g;
+var _partialsRegex = /\{\{>\s*([-\w\/.]+)/g;
+
+function MustacheViewProvider(viewResolver) {
+	this.viewResolver = viewResolver || null;
+	viewResolver = null;
 }
 
 MustacheViewProvider.prototype.createTemplate = function createTemplate(name, source) {
-	return new Bloodhound.Adapters.MustacheTemplate(name, source);
+	var template = new Bloodhound.Adapters.MustacheTemplate(name, source);
+	template.viewResolver = this.viewResolver;
+	return template;
 };
 
 MustacheViewProvider.prototype.forEachSubTemplate = function forEachSubTemplate(source, callback, context) {
-	source.replace(this.regex, function(tag, templateName) {
+	source.replace(_partialsRegex, function(tag, templateName) {
 		callback.call(context, templateName);
 	});
 };

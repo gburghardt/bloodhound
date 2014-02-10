@@ -50,16 +50,24 @@
 	};
 
 	var viewResolver = new Bloodhound.ViewResolver(document);
-	viewResolver.provider = new Bloodhound.ViewProviders.SimpleTemplateViewProvider();
+	viewResolver.provider = new Bloodhound.ViewProviders.SimpleTemplateViewProvider(viewResolver);
 	viewResolver.templateUrlBase = "./simple_templates";
 
-	var renderingEngine = new Bloodhound.RenderingEngine(viewResolver);
-
+	Bloodhound.setViewResolver(viewResolver);
 	Template.viewResolver = viewResolver;
 
-	renderingEngine.render("blog/posts/index", blog)
-		.done(function(source) {
-			document.getElementById("blog").innerHTML = source;
+	var start = new Date().getTime();
+
+	console.log("Begin rendering...");
+
+	Bloodhound.render("blog/posts/index", blog, "blog")
+		.done(function(source, template, element, promiser, promise) {
+			console.log("Done rendering! - " + (new Date().getTime() - start) + "ms");
+			console.log("Source:\n", source);
+			console.log("Template: ", template);
+			console.log("Element: ", element);
+			console.log("Promiser (rendering engine): ", promiser);
+			console.log("Promise: ", promise);
 		});
 
 </script>

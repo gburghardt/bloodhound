@@ -1,29 +1,32 @@
 (function() {
 
-function SimpleTemplateViewProvider() {
-	this.regexes = [
-		Template.REGEX_FOREACH,
-		Template.REGEX_RENDER,
-		Template.REGEX_INCLUDE
-	];
+var _tagRegexes = [
+	Template.REGEX_FOREACH,
+	Template.REGEX_RENDER,
+	Template.REGEX_INCLUDE
+];
+
+function SimpleTemplateViewProvider(viewResolver) {
+	this.viewResolver = viewResolver || null;
+	viewResolver = null;
 }
 
 SimpleTemplateViewProvider.prototype.createTemplate = function createTemplate(name, source) {
-	return new Template(name, source);
+	var template = new Template(name, source);
+	template.viewResolver = this.viewResolver;
+	return template;
 };
 
 SimpleTemplateViewProvider.prototype.forEachSubTemplate = function forEachSubTemplate(source, callback, context) {
-	var regexes = this.regexes,
-	    i = 0,
-	    length = regexes.length;
+	var i = 0, length = _tagRegexes.length;
 
 	for (i; i < length; i++) {
-		source = source.replace(regexes[i], function(tag, templateName) {
+		source = source.replace(_tagRegexes[i], function(tag, templateName) {
 			callback.call(context, templateName);
 		});
 	}
 
-	regexes = callback = context = null;
+	callback = context = null;
 };
 
 Bloodhound.ViewProviders.SimpleTemplateViewProvider = SimpleTemplateViewProvider;

@@ -64,16 +64,23 @@
 	};
 
 	var viewResolver = new Bloodhound.ViewResolver(document);
-	viewResolver.provider = new Bloodhound.ViewProviders.MustacheViewProvider();
+	viewResolver.provider = new Bloodhound.ViewProviders.MustacheViewProvider(viewResolver);
 	viewResolver.templateUrlBase = "./mustache_templates";
 
-	Bloodhound.Adapters.MustacheTemplate.viewResolver = viewResolver;
+	Bloodhound.setViewResolver(viewResolver);
 
-	var renderingEngine = new Bloodhound.RenderingEngine(viewResolver);
+	var start = new Date().getTime();
 
-	renderingEngine.render("blog/posts/index", blog)
-		.done(function(source) {
-			document.getElementById("blog").innerHTML = source;
+	console.log("Begin rendering...");
+
+	Bloodhound.render("blog/posts/index", blog, "blog")
+		.done(function(source, template, element, promiser, promise) {
+			console.log("Done rendering! - " + (new Date().getTime() - start) + "ms");
+			console.log("Source:\n", source);
+			console.log("Template: ", template);
+			console.log("Element: ", element);
+			console.log("Promiser (rendering engine): ", promiser);
+			console.log("Promise: ", promise);
 		});
 
 </script>

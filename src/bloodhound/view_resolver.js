@@ -16,6 +16,7 @@ function ViewResolver(container, provider) {
 
 	this.fetch = fetch;
 	this.find = find;
+	this.getDocument = getDocument;
 	this.getTemplateCache = getTemplateCache;
 
 	// Private Properties
@@ -117,6 +118,10 @@ function ViewResolver(container, provider) {
 				callback.call(context, template);
 			});
 		}
+	}
+
+	function getDocument() {
+		return self.container.ownerDocument || self.container;
 	}
 
 	function getSourceNode(name, container) {
