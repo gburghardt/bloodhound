@@ -24,6 +24,9 @@ var Bloodhound = {
 		},
 		setSource: function setSource(source) {
 			throw new Error("Bloodhound.ITemplate is an interface");
+		},
+		setViewResolver: function setViewResolver(viewResolver) {
+			throw new Error("Bloodhound.ITemplate is an interface");
 		}
 	},
 
