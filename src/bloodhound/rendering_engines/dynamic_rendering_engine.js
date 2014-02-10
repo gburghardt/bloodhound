@@ -1,12 +1,12 @@
 (function() {
 
-function RenderingEngine(viewResolver) {
+function DynamicRenderingEngine(viewResolver) {
 	this.viewResolver = viewResolver || null;
 }
 
-RenderingEngine.prototype.viewResolver = null;
+DynamicRenderingEngine.prototype.viewResolver = null;
 
-RenderingEngine.prototype.render = function render(name, data, elementOrId) {
+DynamicRenderingEngine.prototype.render = function render(name, data, elementOrId) {
 	var promise = new Bloodhound.RenderPromise(this),
 	    element = null,
 	    doc = this.viewResolver.getDocument();
@@ -39,6 +39,6 @@ RenderingEngine.prototype.render = function render(name, data, elementOrId) {
 	return promise;
 };
 
-Bloodhound.RenderingEngine = RenderingEngine;
+Bloodhound.RenderingEngines.DynamicRenderingEngine = DynamicRenderingEngine;
 
 })();

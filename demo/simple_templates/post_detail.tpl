@@ -6,7 +6,7 @@
 		#{body}
 	</div>
 
-	<ol>
+	<ol class="comments">
 		#{render blog/posts/comments foreach comments}
 	</ol>
 </article>

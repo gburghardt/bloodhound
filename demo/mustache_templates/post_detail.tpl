@@ -7,7 +7,7 @@
 			{{{body}}}
 		</div>
 
-		<ol>
+		<ol class="comments">
 			{{> blog/posts/comments}}
 		</ol>
 	</article>
