@@ -19,20 +19,7 @@
 <script type="text/html" data-template-name="blog/posts/index">
 	<h1>{{title}}</h1>
 
-	{{#posts}}
-		<article>
-			<h2>{{title}}</h2>
-			<p>{{date}}</p>
-
-			<div>
-				{{{body}}}
-			</div>
-
-			<ol>
-				{{> blog/posts/comments}}
-			</ol>
-		</article>
-	{{/posts}}
+	{{> blog/posts/detail}}
 </script>
 
 <script type="text/html" data-template-name="blog/posts/detail" data-template-url="./mustache_templates/post_detail.tpl"></script>
