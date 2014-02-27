@@ -5,12 +5,14 @@
  * render operations.
  **/
 Bloodhound.IRenderPromise = {
+
 	/**
 	 * new Bloodhound.IRenderPromise(promiser = null)
 	 * - promiser (Object): The object making the promise, in this case an instance
 	 *                      of Bloodhound.RenderingEngines.IDynamicRenderingEngine.
 	 **/
 	constructor: function(promiser) {},
+
 	/**
 	 * Bloodhound.IRenderPromise#done(callback[, context]) -> Bloodhound.IRenderPromise
 	 * - callback (Function): The callback function invoked when the promise is fulfilled
@@ -25,6 +27,7 @@ Bloodhound.IRenderPromise = {
 	 *   > promise, Bloodhound.IRenderPromise: This promise
 	 **/
 	done: function(callback, context) {}
+
 };
 
 /**
@@ -34,24 +37,28 @@ Bloodhound.IRenderPromise = {
  * code, and the name of this template used by view resolvers.
  **/
 Bloodhound.ITemplate = {
+
 	/**
 	 * Bloodhound.ITemplate#name -> String
 	 *
 	 * Name of this template used by view resolvers to find a view.
 	 **/
 	name: "...",
+
 	/**
 	 * Bloodhound.ITemplate#source -> String
 	 *
 	 * The raw source code for this template.
 	 **/
 	source: "...",
+
 	/**
 	 * new Bloodhound.ITemplate([name[, source]])
 	 * - name (String): Optional name for this template
 	 * - source (String): Optional source code for this template
 	 **/
 	constructor: function(name, source) {},
+
 	/**
 	 * Bloodhound.ITemplate#render(data) -> String
 	 * - data (Object): The object used to render the data
@@ -59,17 +66,20 @@ Bloodhound.ITemplate = {
 	 * Render this template with the given data and return the transformed string.
 	 **/
 	render: function(data) {},
+
 	/**
 	 * Bloodhound.ITemplate#setSource(source)
 	 * - source (String): The source code for this template
 	 **/
 	setSource: function(source) {},
+
 	/**
 	 * Bloodhound.ITemplate#setViewResolver(viewResolver)
 	 * - viewResolver (Bloodhound.ViewResolvers.IViewResolver): The view resolver allowing this template to look up
 	 *                                                          sub templates or partials during rendering.
 	 **/
 	setViewResolver: function(viewResolver) {}
+
 };
 
 /**
@@ -78,11 +88,13 @@ Bloodhound.ITemplate = {
  * This is the interface that all Bloodhound rendering engines must implement.
  **/
 Bloodhound.RenderingEngines.IRenderingEngine = {
+
 	/**
 	 * new Bloodhound.RenderingEngines.IRenderingEngine(viewResolver = null)
 	 * - viewResolver (Bloodhound.ViewResolvers.IViewResolver): The view resolver responsible for looking up views
 	 **/
 	constructor: function(viewResolver) {},
+
 	/**
 	 * Bloodhound.RenderingEngines.IRenderingEngine#render(name, data[, elementOrId]) -> String
 	 * - name (String): The name of the view to render
@@ -93,11 +105,13 @@ Bloodhound.RenderingEngines.IRenderingEngine = {
 	 * Id is given, set the innerHTML of that element and return the rendered string.
 	 **/
 	render: function(name, data, elementOrId) {},
+
 	/**
 	 * Bloodhound.RenderingEngines.IRenderingEngine#setViewResolver(viewResolver)
 	 * - viewResolver (Bloodhound.ViewResolvers.IViewResolver): The view resolver for this rendering engine.
 	 **/
 	setViewResolver: function(viewResolver) {}
+
 };
 
 /**
@@ -109,11 +123,13 @@ Bloodhound.RenderingEngines.IRenderingEngine = {
  * an asynchronous process.
  **/
 Bloodhound.RenderingEngines.IDynamicRenderingEngine = {
+
 	/**
 	 * new Bloodhound.RenderingEngines.IDynamicRenderingEngine(viewResolver = null)
 	 * - viewResolver (Bloodhound.ViewResolvers.IDynamicViewResolver): The view resolver responsible for looking up views
 	 **/
 	constructor: function(viewResolver) {},
+
 	/**
 	 * Bloodhound.RenderingEngines.IDynamicRenderingEngine#render(name, data[, elementOrId]) -> Bloodhound.IRenderPromise
 	 * - name (String): The name of the view to render
@@ -124,11 +140,13 @@ Bloodhound.RenderingEngines.IDynamicRenderingEngine = {
 	 * element or Id is given, set the innerHTML of that element.
 	 **/
 	render: function(name, data, elementOrId) {},
+
 	/**
 	 * Bloodhound.RenderingEngines.IDynamicRenderingEngine#setViewResolver(viewResolver)
 	 * - viewResolver (Bloodhound.ViewResolvers.IDynamicViewResolver): The view resolver for this rendering engine.
 	 **/
 	setViewResolver: function(viewResolver) {}
+
 };
 
 /**
@@ -140,17 +158,21 @@ Bloodhound.RenderingEngines.IDynamicRenderingEngine = {
  * to find the names of all parials or sub templates within that source code.
  **/
 Bloodhound.ViewProviders.IViewProvider = {
+
 	/**
 	 * new Bloodhound.ViewProviders.IViewProvider()
 	 **/
 	constructor: function() {},
+
 	/**
 	 * Bloodhound.ViewProviders.IViewProvider#createTemplate(name, source) -> Bloodhound.ITemplate
-	 * - name (String)
+	 * - name (String): Name of the template
+	 * - source (String): Template source code
 	 *
 	 * Creates a new template object given the view's name and source code.
 	 **/
 	createTemplate: function(name, source) {},
+
 	/**
 	 * Bloodhound.ViewProviders.IViewProvider#forEachSubTemplate(source, callback[, context])
 	 * - source (String): Source code for a template
@@ -162,6 +184,7 @@ Bloodhound.ViewProviders.IViewProvider = {
 	 * is found.
 	 **/
 	forEachSubTemplate: function(source, callback, context) {}
+
 };
 
 /**
@@ -172,6 +195,7 @@ Bloodhound.ViewProviders.IViewProvider = {
  * views by name and generating new template objects using a view provider.
  **/
 Bloodhound.ViewResolvers.IViewResolver = {
+
 	/**
 	 * Bloodhound.ViewResolvers.IViewResolver#templateNameAttribute -> String
 	 *
@@ -179,6 +203,7 @@ Bloodhound.ViewResolvers.IViewResolver = {
 	 * templates by name when they exist in <script type="text/html"/> tags.
 	 **/
 	templateNameAttribute: "...",
+
 	/**
 	 * new Bloodhound.ViewResolvers.IViewResolver([elementOrId[, provider]])
 	 * - elementOrId (String|HtmlElement): The HTML tag or node that contains all the <script type="text/html"/>
@@ -186,6 +211,7 @@ Bloodhound.ViewResolvers.IViewResolver = {
 	 * - provider (Bloodhound.ViewProviders.IViewProvider): The view provider for this view resolver.
 	 **/
 	constructor: function(elementOrId, provider) {},
+
 	/**
 	 * Bloodhound.ViewResolvers.IViewResolver#addTemplate(name, template)
 	 * - name (String): Name of this new template
@@ -195,6 +221,7 @@ Bloodhound.ViewResolvers.IViewResolver = {
 	 * duplicate name gets added.
 	 **/
 	addTemplate: function(name, template) {},
+
 	/**
 	 * Bloodhound.ViewResolvers.IViewResolver#find(name) -> Bloodhound.ITemplate
 	 * - name (String): The name of the view to find
@@ -203,12 +230,14 @@ Bloodhound.ViewResolvers.IViewResolver = {
 	 * does not exist in the cache, an error gets thrown.
 	 **/
 	find: function(name) {},
+
 	/**
 	 * Bloodhound.ViewResolvers.IViewResolver#getDocument() -> HtmlDocument
 	 *
 	 * Gets the document object for this view resolvers container element.
 	 **/
 	getDocument: function() {},
+
 	/**
 	 * Bloodhound.ViewResolvers.IViewResolver#getTemplate(name) -> Bloodhound.ITemplate
 	 * - name (String): Name of a cached template
@@ -216,23 +245,27 @@ Bloodhound.ViewResolvers.IViewResolver = {
 	 * Get a template object from the cache. Returns null if the "name" is not found.
 	 **/
 	getTemplate: function(name) {},
+
 	/**
 	 * Bloodhound.ViewResolvers.IViewResolver#getTemplateCache() -> Object
 	 *
 	 * Returns a key-value object containing the cache Bloodhound.ITemplate objects.
 	 **/
 	getTemplateCache: function() {},
+
 	/**
 	 * Bloodhound.ViewResolvers.IViewResolver#setContainer(elementOrId)
 	 * - elementOrId (String|HtmlElement): The HTML tag or node that contains all the <script type="text/html"/>
 	 *                                     tags that contain template source code.
 	 **/
 	setContainer: function(elementOrId) {},
+
 	/**
 	 * Bloodhound.ViewResolvers.IViewResolver#setProvider(provider)
 	 * - provider (Bloodhound.ViewProviders.IViewProvider): The view provider for this view resolver.
 	 **/
 	setProvider: function(provider) {}
+
 };
 
 /**
@@ -244,12 +277,14 @@ Bloodhound.ViewResolvers.IViewResolver = {
  * template objects using a view provider. Some method calls may be asynchronous.
  **/
 Bloodhound.ViewResolvers.IDynamicViewResolver = {
+
 	/**
 	 * Bloodhound.ViewResolvers.IDynamicViewResolver#templateExtension -> String
 	 *
 	 * The file extension appended to convention based URLs for views. Defaults to ".tpl".
 	 **/
 	templateExtension: "...",
+
 	/**
 	 * Bloodhound.ViewResolvers.IDynamicViewResolver#templateUrlAttribute -> String
 	 *
@@ -260,12 +295,14 @@ Bloodhound.ViewResolvers.IDynamicViewResolver = {
 	 *          data-template-url="/path/to/foo.tpl"></script>
 	 **/
 	templateUrlAttribute: "...",
+
 	/**
 	 * Bloodhound.ViewResolvers.IDynamicViewResolver#templateUrlBase -> String
 	 *
 	 * The base URL for views fetched by name convention.
 	 **/
 	templateUrlBase: "...",
+
 	/**
 	 * Bloodhound.ViewResolvers.IDynamicViewResolver#find(name) -> Bloodhound.ITemplate
 	 * - name (String): The name of the view to find
@@ -290,4 +327,5 @@ Bloodhound.ViewResolvers.IDynamicViewResolver = {
 	 * error is thrown and the callback is never invoked.
 	 **/
 	find: function(name, callback, context) {},
+
 };
