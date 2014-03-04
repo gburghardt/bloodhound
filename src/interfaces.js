@@ -96,13 +96,14 @@ Bloodhound.RenderingEngines.IRenderingEngine = {
 	constructor: function(viewResolver) {},
 
 	/**
-	 * Bloodhound.RenderingEngines.IRenderingEngine#render(name, data[, elementOrId]) -> String
+	 * Bloodhound.RenderingEngines.IRenderingEngine#render(name, data[, elementOrId]) -> Bloodhound.IRenderPromise
 	 * - name (String): The name of the view to render
 	 * - data (Object): The object used to render the data
 	 * - elementOrId (String|HTMLElement): An HTML tag Id or node in which to render the output
 	 *
 	 * Render a view with the given data and return the rendered string. If an element or
 	 * Id is given, set the innerHTML of that element and return the rendered string.
+	 * Returns a Bloodhound.IRenderPromise.
 	 **/
 	render: function(name, data, elementOrId) {},
 

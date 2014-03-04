@@ -7,9 +7,11 @@ function EmbeddedRenderingEngine(viewResolver) {
 }
 
 EmbeddedRenderingEngine.prototype.render = function render(name, data, elementOrId) {
-	var template = this.viewResolver.find(name),
+	var promise = new Bloodhound.RenderPromise(this),
+	    template = this.viewResolver.find(name),
 	    result = "",
-	    element = null;
+	    element = null,
+	    doc = this.viewResolver.getDocument();
 
 	if (!template) {
 		throw new Error("Could not find template named: " + name);
@@ -19,7 +21,7 @@ EmbeddedRenderingEngine.prototype.render = function render(name, data, elementOr
 
 	if (elementOrId) {
 		element = typeof elementOrId === "string"
-		        ? document.getElementById(elementOrId)
+		        ? doc.getElementById(elementOrId)
 		        : elementOrId;
 
 		if (!element) {
@@ -29,9 +31,11 @@ EmbeddedRenderingEngine.prototype.render = function render(name, data, elementOr
 		element.innerHTML = result;
 	}
 
+	promise.fulfill("done", result, template, element);
+
 	element = template = data = elementOrId = null;
 
-	return result;
+	return promise;
 };
 
 EmbeddedRenderingEngine.prototype.setViewResolver = function setViewResolver(viewResolver) {
