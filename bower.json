@@ -1,7 +1,7 @@
 {
 	"name": "bloodhound",
 	"description": "The missing view resolver for JavaScript. Easily render embedded and dynamic views using any templating language you want.",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"homepage": "https://github.com/gburghardt/bloodhound",
 	"authors": [
 		"Greg Burghardt <greg_burghardt@yahoo.com>"
