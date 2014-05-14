@@ -1,4 +1,4 @@
-/*! bloodhound 2014-05-05 */
+/*! bloodhound 2014-05-14 */
 (function() {
 
 function DynamicRenderingEngine(viewResolver) {
@@ -206,7 +206,7 @@ function DynamicViewResolver(container, provider) {
 
 		var complete = function complete() {
 			xhr.onreadystatechange = null;
-			xhr = callback = context = resolver = uri = null;
+			xhr = callback = context = uri = null;
 		};
 
 		xhr.onreadystatechange = readyStateChanged;
