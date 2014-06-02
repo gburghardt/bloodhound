@@ -315,7 +315,9 @@ downloading the template source code via AJAX by building a URL to a file
 containing the template source code, and issuing a GET request. By default, a
 template named `blog/post` resolves to the URL `/js/app/views/blog/post.tpl`.
 
-    viewResolver.find("blog/post", function(template) { ... });
+```javascript
+viewResolver.find("blog/post", function(template) { ... });
+```
 
 If you have a browser debugging tool open, under the Network tab you'll see an
 AJAX request to `GET /js/app/views/blog/post.tpl`
