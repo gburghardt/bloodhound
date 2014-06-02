@@ -37,11 +37,13 @@ in your project, then run `bower install`.
 
 In your bower.json file:
 
-    {
-        "dependencies": {
-            "bloodhound": "~1.0"
-        }
+```javascript
+{
+    "dependencies": {
+        "bloodhound": "~1.0"
     }
+}
+```
 
 Otherwise, you can download the source or clone it from GitHub:
 
@@ -67,9 +69,11 @@ Bloodhound gives you two ways to resolve views: Embedded and Dynamic.
 An Embedded View means the template source code for that view exists on the web
 page as a `<script>` tag, e.g.
 
-    <script type="text/html" data-template-name="foo">
-        <p>Foo: {{foo}}</p>
-    </script>
+```html
+<script type="text/html" data-template-name="foo">
+    <p>Foo: {{foo}}</p>
+</script>
+```
 
 This is probably the most familiar kind of view for front end developers, and is
 the prevailing pattern.
@@ -125,17 +129,87 @@ Embedded Views are the easiest to implement, and build on a pattern already in
 use by many front end developers. The template source code for a view resides in
 the DOM inside `script` tags.
 
+```html
+<script type="text/html" data-template-name="blog/post">
+    <h2>{{title}}</h2>
+    <p>{{date}}</p>
+    <div>
+        {{{body}}}
+    </div>
+</script>
+```
+
+This example is using Mustache templates. You can render this template by
+referring to its name, `blog/post`. Below is the JavaScript required to wire
+things together:
+
+```javascript
+var provider = new Bloodhound.ViewProviders.MustacheViewProvider(),
+    resolver = new Bloodhound.ViewResolvers.EmbeddedViewResolver(document, provider),
+    renderingEngine = new Bloodhound.RenderingEngines.EmbeddedRenderingEngine(resolver);
+
+var data = {
+    title: "Test",
+    date: "2014/02/11",
+    body: "<p>Just a blog post</p>"
+};
+```
+
+```javascript
+var html = renderingEngine.render("blog/post", data);
+```
+
+The `html` variable holds the rendered Mustache template. You can render
+directly to an HTML tag by Id:
+
+```javascript
+renderingEngine.render("blog/post", data, "blog_post");
+```
+
+The rendered source for `blog/post` will be inserted into an HTML tag whose Id
+is `blog_post` by setting the `innerHTML` property. You may also use a reference
+to a DOM node:
+
+```javascript
+var node = document.getElementById("blog_post");
+
+renderingEngine.render("blog/post", data, node);
+```
+
+In each case, the return value of `renderingEngine.render` is the rendered HTML
+source:
+
+```javascript
+var html = renderingEngine.render("blog/post", data, "blog_post");
+```
+
+**Demo: `demo/mustache_templates/index.html`**
+
+If the template language supports it, sub templates (sometimes called partials),
+can be rendered as well. We'll use Mustache templates as an example:
+
+```html
+<body>
+    <div id="blog_post"></div>
+
     <script type="text/html" data-template-name="blog/post">
         <h2>{{title}}</h2>
         <p>{{date}}</p>
         <div>
             {{{body}}}
         </div>
+        <ol class="comments">
+            {{> blog/post/comments}}
+        </ol>
     </script>
 
-This example is using Mustache templates. You can render this template by
-referring to its name, `blog/post`. Below is the JavaScript required to wire
-things together:
+    <script type="text/html" data-template-name="blog/post/comments">
+        {{#comments}}
+            <li>
+                {{text}} &mdash; {{author}}, {{date}}
+            </li>
+        {{/comments}}
+    </script>
 
     <script type="text/javascript">
         var provider = new Bloodhound.ViewProviders.MustacheViewProvider(),
@@ -145,80 +219,22 @@ things together:
         var data = {
             title: "Test",
             date: "2014/02/11",
-            body: "<p>Just a blog post</p>"
+            body: "<p>Just a blog post</p>",
+            comments: [{
+                text: "Great info!",
+                author: "Concerned Citizen",
+                date: "2014/02/04"
+            },{
+                text: "Trash talk!",
+                author: "Anonymous Coward",
+                date: "2014/01/28"
+            }]
         };
 
-        var html = renderingEngine.render("blog/post", data);
+        renderingEngine.render("blog/post", data, "blog_post");
     </script>
-
-The `html` variable holds the rendered Mustache template. You can render
-directly to an HTML tag by Id:
-
-    renderingEngine.render("blog/post", data, "blog_post");
-
-The rendered source for `blog/post` will be inserted into an HTML tag whose Id
-is `blog_post` by setting the `innerHTML` property. You may also use a reference
-to a DOM node:
-
-    var node = document.getElementById("blog_post");
-
-    renderingEngine.render("blog/post", data, node);
-
-In each case, the return value of `renderingEngine.render` is the rendered HTML
-source:
-
-    var html = renderingEngine.render("blog/post", data, "blog_post");
-
-**Demo: `demo/mustache_templates/index.html`**
-
-If the template language supports it, sub templates (sometimes called partials),
-can be rendered as well. We'll use Mustache templates as an example:
-
-    <body>
-        <div id="blog_post"></div>
-
-        <script type="text/html" data-template-name="blog/post">
-            <h2>{{title}}</h2>
-            <p>{{date}}</p>
-            <div>
-                {{{body}}}
-            </div>
-            <ol class="comments">
-                {{> blog/post/comments}}
-            </ol>
-        </script>
-
-        <script type="text/html" data-template-name="blog/post/comments">
-            {{#comments}}
-                <li>
-                    {{text}} &mdash; {{author}}, {{date}}
-                </li>
-            {{/comments}}
-        </script>
-
-        <script type="text/javascript">
-            var provider = new Bloodhound.ViewProviders.MustacheViewProvider(),
-                resolver = new Bloodhound.ViewResolvers.EmbeddedViewResolver(document, provider),
-                renderingEngine = new Bloodhound.RenderingEngines.EmbeddedRenderingEngine(resolver);
-
-            var data = {
-                title: "Test",
-                date: "2014/02/11",
-                body: "<p>Just a blog post</p>",
-                comments: [{
-                    text: "Great info!",
-                    author: "Concerned Citizen",
-                    date: "2014/02/04"
-                },{
-                    text: "Trash talk!",
-                    author: "Anonymous Coward",
-                    date: "2014/01/28"
-                }]
-            };
-
-            renderingEngine.render("blog/post", data, "blog_post");
-        </script>
-    </body>
+</body>
+```
 
 Rendering partials in Mustache becomes a lot easier. You don't need to build
 your own object of partials before calling `Mustache.render`. Let Bloodhound do
@@ -234,40 +250,42 @@ The big difference between Dynamic and Embedded Views is that the call to
 views the same. Let's take the previous example with embedded views and set it
 up for Dynamic Views.
 
-    <body>
-        <div id="blog_post"></div>
+```html
+<body>
+    <div id="blog_post"></div>
 
-        <script type="text/html" data-template-name="blog/post">
-            <!-- same template source code -->
-        </script>
+    <script type="text/html" data-template-name="blog/post">
+        <!-- same template source code -->
+    </script>
 
-        <script type="text/html" data-template-name="blog/post/comments">
-            <!-- same template source code -->
-        </script>
+    <script type="text/html" data-template-name="blog/post/comments">
+        <!-- same template source code -->
+    </script>
 
-        <script type="text/javascript">
-            var provider = new Bloodhound.ViewProviders.MustacheViewProvider(),
-                resolver = new Bloodhound.ViewResolvers.DynamicViewResolver(document, provider),
-                renderingEngine = new Bloodhound.RenderingEngines.DynamicRenderingEngine(resolver);
+    <script type="text/javascript">
+        var provider = new Bloodhound.ViewProviders.MustacheViewProvider(),
+            resolver = new Bloodhound.ViewResolvers.DynamicViewResolver(document, provider),
+            renderingEngine = new Bloodhound.RenderingEngines.DynamicRenderingEngine(resolver);
 
-            var data = {
-                title: "Test",
-                date: "2014/02/11",
-                body: "<p>Just a blog post</p>",
-                comments: [{
-                    text: "Great info!",
-                    author: "Concerned Citizen",
-                    date: "2014/02/04"
-                },{
-                    text: "Trash talk!",
-                    author: "Anonymous Coward",
-                    date: "2014/01/28"
-                }]
-            };
+        var data = {
+            title: "Test",
+            date: "2014/02/11",
+            body: "<p>Just a blog post</p>",
+            comments: [{
+                text: "Great info!",
+                author: "Concerned Citizen",
+                date: "2014/02/04"
+            },{
+                text: "Trash talk!",
+                author: "Anonymous Coward",
+                date: "2014/01/28"
+            }]
+        };
 
-            renderingEngine.render("blog/post", data, "blog_post");
-        </script>
-    </body>
+        renderingEngine.render("blog/post", data, "blog_post");
+    </script>
+</body>
+```
 
 We swap out `EmbeddedViewResolver` for `DynamicViewResolver`, and change
 `EmbeddedRenderingEngine` to `DynamicRenderingEngine`. After that, it looks
@@ -277,10 +295,12 @@ arguments. The only difference in behavior is that it returns a
 view has been rendered, no code changes are required. If you want to run code
 after the asynchronous rendering is complete, simply use this:
 
-    renderingEngine.render("blog/post", data, "blog_post")
-        .done(function(html, template, element, renderingEngine, promise) {
-            alert("Rendered!");
-        });
+```javascript
+renderingEngine.render("blog/post", data, "blog_post")
+    .done(function(html, template, element, renderingEngine, promise) {
+        alert("Rendered!");
+    });
+```
 
 Now, let's remove the template code from the HTML document and have Bloodhound
 fetch the source code from the server.
@@ -339,14 +359,18 @@ We create a `script` tag holding the name of the view we want in the
 `data-template-name` attribute, and then we add the `data-template-url`
 attribute specifying the exact URL to download the template source:
 
-    <script type="text/html" data-template-name="blog/post/comments"
-        data-template-url="/blogs/123/comments?foo=bar"></script>
+```html
+<script type="text/html" data-template-name="blog/post/comments"
+    data-template-url="/blogs/123/comments?foo=bar"></script>
+```
 
 The `data-template-url` attribute on the `script` tag will cause Bloodhound to
 make a GET request to `/blogs/123/comments?foo=bar` when finding the view named
 "blog/post/comments":
 
-    viewResolver.find("blog/post/comments", function(template) { ... });
+```javascript
+viewResolver.find("blog/post/comments", function(template) { ... });
+```
 
 In the Network tab of your browser debugging tool, you'll see:
 
@@ -360,19 +384,23 @@ customize a few settings for existing web projects, which we will discuss next.
 You can customize several options for how Dynamic Views are resolved. A URL can
 be generated for you given the name of a view. The basic pattern is:
 
-    templateURLBase + viewName + templateExtension
+```javascript
+templateURLBase + viewName + templateExtension
+```
 
 By default, the `templateURLBase` for DynamiceViewResolver is "/js/app/views",
 and the `templateExtension` is ".tpl". You can change these settings on the
 view resolver object like this:
 
-    var viewResolver = new Bloodhound.ViewResolvers.DynamicViewResolver(provider);
+```javascript
+var viewResolver = new Bloodhound.ViewResolvers.DynamicViewResolver(provider);
 
-    viewResolver.templateURLBase = "/javascripts/my_app";
-    viewResolver.templateExtension = ".mustache";
-    viewResolver.httpMethod = "post";
+viewResolver.templateURLBase = "/javascripts/my_app";
+viewResolver.templateExtension = ".mustache";
+viewResolver.httpMethod = "post";
 
-    viewResolver.find("blog/post", function(template) { ... });
+viewResolver.find("blog/post", function(template) { ... });
+```
 
 With the settings above, the view named "blog/post" gets resolved to this URL:
 `/javascripts/my_app/blog/post.mustache`, and the DynamicViewResolver would
@@ -381,9 +409,11 @@ issue a POST request to downlod the source code.
 You can also override the HTTP method on `script` tags that override the default
 URL for a view:
 
-    <script type="text/html" data-template-name="foo"
-        data-template-url="/foo"
-        data-template-method="post"></script>
+```html
+<script type="text/html" data-template-name="foo"
+    data-template-url="/foo"
+    data-template-method="post"></script>
+```
 
 Now running `viewResolver.find("foo")` will issue a POST request to "/foo" to
 download the template source.
@@ -475,19 +505,21 @@ Bloodhound comes with two implementations already:
 
 Use this as a guide for creating new view providers:
 
-    function MyViewProvider() {}
+```javascript
+function MyViewProvider() {}
 
-    MyViewProvider.prototype.createTemplate = function createTemplate(name, source) {
-        // return an object supporting Bloodhound.ITemplate
-    };
+MyViewProvider.prototype.createTemplate = function createTemplate(name, source) {
+    // return an object supporting Bloodhound.ITemplate
+};
 
-    MyViewProvider.prototype.forEachSubTemplate = function(source, callback, context) {
-        var subTemplateRegex = /\{\{>\s*(\w+)\s*\}\}/g;
+MyViewProvider.prototype.forEachSubTemplate = function(source, callback, context) {
+    var subTemplateRegex = /\{\{>\s*(\w+)\s*\}\}/g;
 
-        source.replace(subTemplateRegex, function(tag, templateName) {
-            callback.call(context, templateName);
-        });
-    };
+    source.replace(subTemplateRegex, function(tag, templateName) {
+        callback.call(context, templateName);
+    });
+};
+```
 
 #### Templates
 
@@ -508,36 +540,40 @@ view and its template source code, so we created
 
 Use this as a guide for creating new Templates:
 
-    function MyTemplate(name, source) {
-        this.name = name || null;
+```javascript
+function MyTemplate(name, source) {
+    this.name = name || null;
 
-        if (source) {
-            this.setSource(source);
-        }
+    if (source) {
+        this.setSource(source);
     }
+}
 
-    MyTemplate.prototype.render = function render(data) {
-        // Call method specific to templating language, return a string
-        // e.g. return Mustache.render(this.source, data);
-    };
+MyTemplate.prototype.render = function render(data) {
+    // Call method specific to templating language, return a string
+    // e.g. return Mustache.render(this.source, data);
+};
 
-    MyTemplate.prototype.setSource = function setSource(source) {
-        this.source = source;
-    };
+MyTemplate.prototype.setSource = function setSource(source) {
+    this.source = source;
+};
 
-    MyTemplate.prototype.setViewResolver = function setViewResolver(viewResolver) {
-        this.viewResolver = viewResolver;
-    };
+MyTemplate.prototype.setViewResolver = function setViewResolver(viewResolver) {
+    this.viewResolver = viewResolver;
+};
+```
 
 Each template object gets a reference to the view resolver, allowing templates
 to look up sub templates and render them:
 
-    MyTemplate.prototype.render = function render(data) {
-        var subTemplate = this.viewResolver.find("some_view");
-        var html = subTemplate.render(data.something);
+```javascript
+MyTemplate.prototype.render = function render(data) {
+    var subTemplate = this.viewResolver.find("some_view");
+    var html = subTemplate.render(data.something);
 
-        // ...
-    };
+    // ...
+};
+```
 
 When adding support for other template languages, you shouldn't need to create
 your own view resolver. The `EmbeddedViewResolver` or `DynamicViewResolver`
