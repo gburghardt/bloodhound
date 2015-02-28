@@ -5,6 +5,10 @@ Bloodhound.
 
 ## Releases
 
+### Version 1.0.4
+
+- Fixed syntax error in bower.json
+
 ### Version 1.0.3
 
 - Fixed file paths in bower.json
